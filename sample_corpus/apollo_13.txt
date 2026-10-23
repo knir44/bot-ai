@@ -1,0 +1,9 @@
+Apollo 13: The Successful Failure
+
+Apollo 13 was the seventh crewed mission in the Apollo program and the third meant to land on the Moon. It lifted off on April 11, 1970, with Commander Jim Lovell, Command Module Pilot Jack Swigert, and Lunar Module Pilot Fred Haise. Swigert joined the crew only days before launch, replacing Ken Mattingly, who had been exposed to German measles. The planned landing site was the Fra Mauro highlands.
+
+About 56 hours into the flight, and roughly 330,000 kilometers from Earth, an oxygen tank in the service module exploded after a routine stir of the tanks. The blast crippled the main spacecraft, called Odyssey, which lost electrical power and most of its oxygen supply. Swigert radioed the famous words, "Houston, we've had a problem." The landing was cancelled at once and the only goal became bringing the three men home alive.
+
+The crew moved into the lunar module, Aquarius, and used it as a lifeboat. Aquarius had been designed to keep two men alive for two days on the Moon, not three men for four days, so power, water and cabin heat were rationed hard. The cabin dropped close to freezing. Carbon dioxide then began to build up because the lunar module's lithium hydroxide canisters, which absorb the gas, were full. Engineers on the ground invented an adapter from spare parts, including plastic bags, cardboard and duct tape, that let the crew fit the square command module canisters into the round lunar module sockets.
+
+Flight director Gene Kranz led the ground team in Houston. The spacecraft used a free-return trajectory, swinging around the far side of the Moon so that lunar gravity bent its path back toward Earth. Just before reentry the crew jettisoned the damaged service module, powered the command module back up, and splashed down safely in the South Pacific Ocean on April 17, 1970. NASA later called the mission a successful failure because of what it taught about improvisation and teamwork.

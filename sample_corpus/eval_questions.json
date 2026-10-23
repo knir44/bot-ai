@@ -1,0 +1,29 @@
+[
+  {"id": 1,  "type": "keyword",  "question": "Apollo 13 oxygen tank explosion",                         "expected": ["apollo_13.txt"]},
+  {"id": 2,  "type": "keyword",  "question": "Perseverance rover Jezero Crater",                        "expected": ["mars_rovers.txt"]},
+  {"id": 3,  "type": "keyword",  "question": "Sputnik 1",                                               "expected": ["space_race.txt"]},
+  {"id": 4,  "type": "keyword",  "question": "Voyager Golden Record",                                   "expected": ["voyager.txt"]},
+  {"id": 5,  "type": "keyword",  "question": "TRAPPIST-1",                                              "expected": ["exoplanets.txt"]},
+  {"id": 6,  "type": "keyword",  "question": "COSTAR spherical aberration",                             "expected": ["hubble.txt"]},
+  {"id": 7,  "type": "keyword",  "question": "Zarya module",                                            "expected": ["iss.txt"]},
+  {"id": 8,  "type": "keyword",  "question": "Orion capsule SLS rocket",                                "expected": ["artemis.txt"]},
+  {"id": 9,  "type": "keyword",  "question": "Eagle lunar module Sea of Tranquility",                   "expected": ["apollo_11.txt"]},
+  {"id": 10, "type": "keyword",  "question": "Lovell Swigert Haise",                                    "expected": ["apollo_13.txt"]},
+
+  {"id": 11, "type": "semantic", "question": "Which robot flew a small aircraft on another planet?",    "expected": ["mars_rovers.txt"]},
+  {"id": 12, "type": "semantic", "question": "Who was the first person to travel into space?",          "expected": ["space_race.txt"]},
+  {"id": 13, "type": "semantic", "question": "Which observatory was repaired after launch because its images were blurry?", "expected": ["hubble.txt"]},
+  {"id": 14, "type": "semantic", "question": "What man-made object has travelled farthest from Earth?", "expected": ["voyager.txt"]},
+  {"id": 15, "type": "semantic", "question": "How do astronomers discover worlds circling distant suns?", "expected": ["exoplanets.txt"]},
+  {"id": 16, "type": "semantic", "question": "Where do astronauts live and work in orbit today?",       "expected": ["iss.txt"]},
+  {"id": 17, "type": "semantic", "question": "Which flight nearly ended in disaster but the crew got home safely?", "expected": ["apollo_13.txt"]},
+  {"id": 18, "type": "semantic", "question": "Which telescope sees the earliest galaxies using heat radiation?", "expected": ["jwst.txt"]},
+  {"id": 19, "type": "semantic", "question": "What is the plan to send people back to the Moon?",       "expected": ["artemis.txt"]},
+  {"id": 20, "type": "semantic", "question": "Who was the first human to walk on the lunar surface?",   "expected": ["apollo_11.txt"]},
+
+  {"id": 21, "type": "mixed",    "question": "When did the Ingenuity helicopter first fly?",            "expected": ["mars_rovers.txt"]},
+  {"id": 22, "type": "mixed",    "question": "How cold are the Webb telescope instruments kept?",       "expected": ["jwst.txt"]},
+  {"id": 23, "type": "mixed",    "question": "What did Kennedy promise about the Moon?",                "expected": ["space_race.txt", "apollo_11.txt"]},
+  {"id": 24, "type": "mixed",    "question": "How fast does the ISS travel and how often does it orbit?", "expected": ["iss.txt"]},
+  {"id": 25, "type": "mixed",    "question": "Which spacecraft visited Uranus and Neptune?",            "expected": ["voyager.txt"]}
+]

@@ -1,0 +1,9 @@
+Apollo 11: The First Moon Landing
+
+Apollo 11 was the American spaceflight that landed the first humans on the Moon. It was launched on July 16, 1969, from Launch Complex 39A at the Kennedy Space Center in Florida, aboard a Saturn V rocket, the most powerful rocket flown at that time. The crew consisted of three astronauts: Commander Neil Armstrong, Lunar Module Pilot Edwin "Buzz" Aldrin, and Command Module Pilot Michael Collins.
+
+The spacecraft had two parts that mattered for the landing. The command module, named Columbia, stayed in orbit around the Moon with Collins on board. The lunar module, named Eagle, carried Armstrong and Aldrin down to the surface. Eagle touched down in the Sea of Tranquility on July 20, 1969. During the descent the onboard computer raised several program alarms, coded 1202 and 1201, because it was overloaded with tasks. Mission control in Houston judged them safe to ignore, and Armstrong took manual control to steer past a boulder field, landing with only a few seconds of fuel margin left.
+
+Armstrong stepped onto the surface first. His words, "That's one small step for man, one giant leap for mankind," were heard by an estimated 600 million people watching live on television. Aldrin joined him about twenty minutes later. Together they spent roughly two and a half hours outside, planting an American flag, setting up a seismometer and a laser reflector that scientists still bounce lasers off today, and collecting about 21.5 kilograms of lunar rock and soil.
+
+The astronauts lifted off from the Moon in the top half of Eagle and rejoined Columbia in lunar orbit. The capsule splashed down in the Pacific Ocean on July 24, 1969, and the crew was placed in quarantine for three weeks as a precaution against unknown lunar germs. Apollo 11 fulfilled the goal set by President John F. Kennedy in 1961: to land a man on the Moon and return him safely to Earth before the decade was over.

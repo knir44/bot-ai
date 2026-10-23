@@ -1,0 +1,9 @@
+Rovers and a Helicopter on Mars
+
+NASA has driven robotic rovers on the surface of Mars since 1997. The first was Sojourner, a microwave-oven-sized rover that arrived with the Pathfinder lander in July 1997. In 2004 twin rovers named Spirit and Opportunity landed on opposite sides of the planet. They were designed to work for 90 days, but Opportunity kept going for almost fifteen years until a global dust storm blocked its solar panels in 2018. Their most important discovery was evidence that liquid water once soaked the Martian surface.
+
+Curiosity, a car-sized rover powered by a plutonium radioisotope generator, landed on August 6, 2012, in Gale Crater. It was lowered to the ground on cables by a rocket-powered platform called the sky crane. Curiosity drilled into mudstone and showed that Gale Crater once held a lake with the chemical ingredients needed for microbial life.
+
+Perseverance, nicknamed Percy, landed on February 18, 2021, in Jezero Crater, a dry ancient lake bed with a river delta. Its main job is astrobiology: searching for signs of past microbial life and collecting rock cores in sealed tubes that a future mission is meant to bring back to Earth. An experiment on board called MOXIE successfully made breathable oxygen from the carbon dioxide in the Martian air, a step toward supporting future astronauts.
+
+Perseverance carried a surprise passenger, a small helicopter called Ingenuity. On April 19, 2021, Ingenuity made the first powered, controlled flight on another planet, hovering about three meters above the ground for 39 seconds. It had been designed for a demonstration of just five flights, but it flew 72 times, scouting terrain ahead of the rover, before a damaged rotor blade ended its mission in January 2024. The thin Martian atmosphere, about one percent as dense as Earth's, forced engineers to give Ingenuity unusually large rotor blades that spin very fast.

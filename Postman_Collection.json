@@ -1,0 +1,525 @@
+{
+  "info": {
+    "name": "DocuMind RAG",
+    "description": "Run the requests in order (1 -> 11). Requests 2 and 11 store session_id / session_token as collection variables. Set `baseUrl` to http://localhost:8000/api/v1 (direct) or http://localhost:3000/api/v1 (through nginx).",
+    "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+  },
+  "item": [
+    {
+      "name": "1. Health",
+      "request": {
+        "method": "GET",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/health",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "health"
+          ]
+        },
+        "description": "Backend + Elasticsearch + Postgres status. No auth needed."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200', () => pm.response.to.have.status(200));",
+              "pm.test('has status field', () => pm.expect(pm.response.json()).to.have.property('status'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "2. Create session",
+      "request": {
+        "method": "POST",
+        "header": [],
+        "url": {
+          "raw": "{{baseUrl}}/chat/session",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "chat",
+            "session"
+          ]
+        },
+        "description": "Mints a session id + HMAC token. Saved into collection variables by the test script."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200, 201]));",
+              "const j = pm.response.json();",
+              "pm.collectionVariables.set('session_id', j.session_id);",
+              "pm.collectionVariables.set('session_token', j.token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "3. Seed sample corpus (Space Exploration)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Session-Id",
+            "value": "{{session_id}}",
+            "type": "text"
+          },
+          {
+            "key": "X-Session-Token",
+            "value": "{{session_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/lab/seed",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lab",
+            "seed"
+          ]
+        },
+        "description": "Embeds and indexes the 10 bundled documents (~40 chunks). Needs GEMINI_API_KEY. Takes a few seconds."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('ingested documents', () => pm.expect(pm.response.json().ingested.length).to.be.above(0));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "4. Upload document",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Session-Id",
+            "value": "{{session_id}}",
+            "type": "text"
+          },
+          {
+            "key": "X-Session-Token",
+            "value": "{{session_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/documents/upload",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "documents",
+            "upload"
+          ]
+        },
+        "description": "Choose a PDF / TXT / DOCX in the `file` field (max 10 MB). Try a .exe to see validation reject it (422).",
+        "body": {
+          "mode": "formdata",
+          "formdata": [
+            {
+              "key": "file",
+              "type": "file",
+              "src": []
+            }
+          ]
+        }
+      }
+    },
+    {
+      "name": "5. List documents",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-Session-Id",
+            "value": "{{session_id}}",
+            "type": "text"
+          },
+          {
+            "key": "X-Session-Token",
+            "value": "{{session_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/documents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "documents"
+          ]
+        },
+        "description": "Documents currently indexed, with chunk counts."
+      }
+    },
+    {
+      "name": "6. Send message",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Session-Id",
+            "value": "{{session_id}}",
+            "type": "text"
+          },
+          {
+            "key": "X-Session-Token",
+            "value": "{{session_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/chat/message",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "chat",
+            "message"
+          ]
+        },
+        "description": "Full RAG turn. Response has `answer`, `sources` and a `trace` (BM25 list, vector list, RRF fusion, exact prompt, timings).",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"session_id\": \"{{session_id}}\",\n  \"message\": \"Which robot flew a small helicopter on Mars, and when?\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status 200', () => pm.response.to.have.status(200));",
+              "const j = pm.response.json();",
+              "pm.test('has answer and sources', () => { pm.expect(j.answer).to.be.a('string'); pm.expect(j.sources).to.be.an('array'); });"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "7. Send follow-up (rewritten using history)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Session-Id",
+            "value": "{{session_id}}",
+            "type": "text"
+          },
+          {
+            "key": "X-Session-Token",
+            "value": "{{session_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/chat/message",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "chat",
+            "message"
+          ]
+        },
+        "description": "Look at trace.standalone_query: the pronoun is resolved before searching.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"session_id\": \"{{session_id}}\",\n  \"message\": \"How long was that first flight?\"\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "8. Get history",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-Session-Id",
+            "value": "{{session_id}}",
+            "type": "text"
+          },
+          {
+            "key": "X-Session-Token",
+            "value": "{{session_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/chat/history?session_id={{session_id}}",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "chat",
+            "history"
+          ],
+          "query": [
+            {
+              "key": "session_id",
+              "value": "{{session_id}}"
+            }
+          ]
+        },
+        "description": "All messages of the current session, including sources and traces."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('has messages', () => pm.expect(pm.response.json().messages).to.be.an('array'));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "9. Lab: compare BM25 / vector / RRF",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Session-Id",
+            "value": "{{session_id}}",
+            "type": "text"
+          },
+          {
+            "key": "X-Session-Token",
+            "value": "{{session_token}}",
+            "type": "text"
+          },
+          {
+            "key": "Content-Type",
+            "value": "application/json",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/lab/search",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lab",
+            "search"
+          ]
+        },
+        "description": "Same query, three rankings side by side. `explain: true` adds the per-term BM25 breakdown. Try rrf_k = 0 vs 60.",
+        "body": {
+          "mode": "raw",
+          "raw": "{\n  \"query\": \"Apollo 13 oxygen tank explosion\",\n  \"mode\": \"hybrid\",\n  \"explain\": true,\n  \"retrieve_k\": 10,\n  \"top_k\": 5,\n  \"rrf_k\": 60\n}",
+          "options": {
+            "raw": {
+              "language": "json"
+            }
+          }
+        }
+      }
+    },
+    {
+      "name": "10. Lab: embedding map (PCA 2-D)",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-Session-Id",
+            "value": "{{session_id}}",
+            "type": "text"
+          },
+          {
+            "key": "X-Session-Token",
+            "value": "{{session_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/lab/embedding-map?q=helicopter on Mars",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lab",
+            "embedding-map"
+          ],
+          "query": [
+            {
+              "key": "q",
+              "value": "helicopter on Mars"
+            }
+          ]
+        },
+        "description": "2-D projection of all chunk embeddings plus your query."
+      }
+    },
+    {
+      "name": "11. Reset session (archive + new)",
+      "request": {
+        "method": "POST",
+        "header": [
+          {
+            "key": "X-Session-Id",
+            "value": "{{session_id}}",
+            "type": "text"
+          },
+          {
+            "key": "X-Session-Token",
+            "value": "{{session_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/chat/reset",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "chat",
+            "reset"
+          ]
+        },
+        "description": "Archives the current conversation in Postgres and returns a fresh session; the test script swaps the variables."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('status is 2xx', () => pm.expect(pm.response.code).to.be.oneOf([200, 201]));",
+              "const j = pm.response.json();",
+              "pm.collectionVariables.set('session_id', j.session_id);",
+              "pm.collectionVariables.set('session_token', j.token);"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "12. (Security) Forged token -> 401",
+      "request": {
+        "method": "GET",
+        "header": [
+          {
+            "key": "X-Session-Id",
+            "value": "{{session_id}}",
+            "type": "text"
+          },
+          {
+            "key": "X-Session-Token",
+            "value": "0000000000000000000000000000000000000000000000000000000000000000",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/documents",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "documents"
+          ]
+        },
+        "description": "Same call as #5 but with a fake token."
+      },
+      "event": [
+        {
+          "listen": "test",
+          "script": {
+            "type": "text/javascript",
+            "exec": [
+              "pm.test('rejected', () => pm.response.to.have.status(401));"
+            ]
+          }
+        }
+      ]
+    },
+    {
+      "name": "13. Clear corpus (destructive)",
+      "request": {
+        "method": "DELETE",
+        "header": [
+          {
+            "key": "X-Session-Id",
+            "value": "{{session_id}}",
+            "type": "text"
+          },
+          {
+            "key": "X-Session-Token",
+            "value": "{{session_token}}",
+            "type": "text"
+          }
+        ],
+        "url": {
+          "raw": "{{baseUrl}}/lab/corpus",
+          "host": [
+            "{{baseUrl}}"
+          ],
+          "path": [
+            "lab",
+            "corpus"
+          ]
+        },
+        "description": "Deletes every chunk from Elasticsearch."
+      }
+    }
+  ],
+  "variable": [
+    {
+      "key": "baseUrl",
+      "value": "http://localhost:8000/api/v1"
+    },
+    {
+      "key": "session_id",
+      "value": ""
+    },
+    {
+      "key": "session_token",
+      "value": ""
+    }
+  ]
+}

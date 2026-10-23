@@ -1,0 +1,9 @@
+The Artemis Program
+
+Artemis is NASA's program to return humans to the Moon and to prepare for later missions to Mars. It is named after Artemis, the Greek goddess of the Moon and the twin sister of Apollo. Unlike Apollo, which was a race against the Soviet Union, Artemis is built on international partnerships and commercial companies, and it aims to establish a lasting presence at the Moon rather than a handful of visits.
+
+The program relies on two main vehicles. The Space Launch System, or SLS, is a huge rocket that carries the Orion spacecraft toward the Moon. Orion is a capsule for four astronauts, with a service module built by the European Space Agency that provides power and propulsion. For the landing itself, NASA selected a version of SpaceX's Starship to act as the human landing system that carries astronauts from lunar orbit down to the surface and back.
+
+Artemis I was an uncrewed test flight. It lifted off on November 16, 2022, sent Orion on a path beyond the Moon and back, and ended with a splashdown in the Pacific Ocean on December 11, 2022. The flight tested the heat shield at reentry speed, about 40,000 kilometers per hour. Artemis II is the first crewed flight of the program, a trip around the Moon without landing, with four astronauts: Reid Wiseman, Victor Glover, Christina Koch and Jeremy Hansen of the Canadian Space Agency.
+
+Artemis III is meant to be the first landing of the program, near the lunar south pole, where permanently shadowed craters are believed to hold water ice. Water could be turned into drinking water, breathable oxygen and rocket propellant. NASA has stated the goal of landing the first woman on the Moon. Schedules for these missions have shifted many times, so check current NASA announcements for dates.

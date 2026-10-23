@@ -1,0 +1,14 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer components {
+  .btn { @apply inline-flex items-center justify-center gap-1 rounded-lg px-3 py-1.5 text-sm font-medium transition disabled:opacity-50 disabled:cursor-not-allowed; }
+  .btn-primary { @apply btn bg-brand-600 text-white hover:bg-brand-700; }
+  .btn-ghost { @apply btn bg-white text-slate-700 border border-slate-200 hover:bg-slate-100; }
+  .card { @apply rounded-xl border border-slate-200 bg-white shadow-sm; }
+  .prose-chat p { @apply mb-2 last:mb-0; }
+  .prose-chat ul { @apply list-disc pl-5 mb-2; }
+  .prose-chat ol { @apply list-decimal pl-5 mb-2; }
+  .prose-chat code { @apply rounded bg-slate-100 px-1 text-[0.85em]; }
+}

@@ -1,0 +1,9 @@
+The James Webb Space Telescope
+
+The James Webb Space Telescope, often abbreviated JWST or just Webb, is the largest and most powerful space telescope ever built. It was launched on December 25, 2021, on an Ariane 5 rocket from Kourou in French Guiana. It is a joint project of NASA, the European Space Agency and the Canadian Space Agency, and it is named after James E. Webb, the NASA administrator during the Apollo era.
+
+Webb observes mainly infrared light, which is radiation with longer wavelengths than visible light, often felt as heat. Infrared lets the telescope look through dust clouds that block visible light and detect the faint, stretched light of the very first galaxies. Because the universe is expanding, light from the earliest galaxies has been shifted into the infrared, a stretching called redshift. Webb's goal is to see galaxies that formed only a few hundred million years after the Big Bang.
+
+Seeing faint heat requires the telescope itself to be extremely cold. Webb therefore carries a sunshield about the size of a tennis court, made of five thin layers, that blocks the glare of the Sun, Earth and Moon. The instruments sit in the shade at below 50 kelvin, roughly minus 223 degrees Celsius. Webb does not orbit Earth directly. It circles the Sun-Earth L2 point, about 1.5 million kilometers away, where the Sun and Earth stay in the same direction.
+
+The primary mirror is 6.5 meters across and is made of 18 hexagonal segments of gold-coated beryllium that unfolded after launch. The first full-color images were released in July 2022. Webb has also analyzed the atmospheres of planets around other stars and found water vapor and carbon dioxide.

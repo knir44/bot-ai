@@ -1,0 +1,9 @@
+Hunting for Exoplanets
+
+An exoplanet is a planet that orbits a star other than our Sun. The first confirmed exoplanet around a Sun-like star, 51 Pegasi b, was found in 1995 by the astronomers Michel Mayor and Didier Queloz, who shared the 2019 Nobel Prize in Physics for the discovery. It is a gas giant half the mass of Jupiter that circles its star in just over four days. Since then astronomers have confirmed more than five thousand exoplanets.
+
+Most were found by the transit method. When a planet passes in front of its star as seen from Earth, it blocks a tiny fraction of the starlight, and the star dims slightly and regularly. By measuring the depth and timing of the dips, astronomers learn the planet's size and orbital period. The other major technique is the radial velocity method, which detects the small wobble that a planet's gravity causes in its star by measuring shifts in the star's spectrum.
+
+NASA's Kepler Space Telescope, launched in March 2009, stared at a single patch of sky containing about 150,000 stars and watched for transits. During its mission, which ended in October 2018 when it ran out of fuel, Kepler found thousands of planet candidates and showed that planets are common, and that small rocky planets are abundant. The Transiting Exoplanet Survey Satellite, TESS, launched in April 2018 and surveys nearly the whole sky for brighter, closer stars.
+
+Scientists are especially interested in the habitable zone, the range of distances from a star where liquid water could exist on a planet's surface. In 2017 astronomers announced that the star TRAPPIST-1, about 40 light-years away, hosts seven Earth-sized planets, several of them in or near the habitable zone. The James Webb Space Telescope now studies the atmospheres of such worlds.

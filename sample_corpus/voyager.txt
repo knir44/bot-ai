@@ -1,0 +1,9 @@
+The Voyager Probes
+
+Voyager 1 and Voyager 2 are twin robotic spacecraft launched by NASA in 1977. Voyager 2 left Earth first, on August 20, and Voyager 1 followed on September 5, though Voyager 1 was on a faster path. They were built to exploit a rare alignment of the outer planets that occurs about once every 176 years, which allowed a spacecraft to use the gravity of one planet to slingshot onward to the next. This plan was called the Grand Tour.
+
+Voyager 1 flew past Jupiter in 1979 and Saturn in 1980, discovering active volcanoes on the Jovian moon Io and studying the thick atmosphere of Titan. Voyager 2 flew past Jupiter, Saturn, Uranus in 1986 and Neptune in 1989. It remains the only spacecraft ever to visit Uranus and Neptune. In 1990, at the request of astronomer Carl Sagan, Voyager 1 turned its camera back toward home and took the image known as the Pale Blue Dot, showing Earth as a tiny speck about six billion kilometers away.
+
+Both probes eventually left the heliosphere, the bubble of charged particles blown outward by the Sun. Voyager 1 crossed into interstellar space in August 2012, and Voyager 2 did so in November 2018. Voyager 1 is the most distant human-made object, more than 160 astronomical units from the Sun, so far that a radio signal needs over twenty hours to reach it.
+
+Each spacecraft carries a Golden Record, a gold-plated copper phonograph disc containing sounds and images of Earth, greetings in 55 languages, music from many cultures, and instructions for playing it. The probes are powered by radioisotope thermoelectric generators that turn the heat of decaying plutonium-238 into electricity. Their power output declines every year, so engineers switch off instruments one by one to keep the spacecraft talking for as long as possible.
