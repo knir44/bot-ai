@@ -34,12 +34,12 @@ def create_session() -> dict:
 @router.post("/message")
 def send_message(body: MessageIn, session_id: str = Depends(require_session)) -> dict:
     if body.session_id != session_id:
-        raise HTTPException(status_code=400, detail="session_id in body does not match X-Session-Id header.")
+        raise HTTPException(status_code=400, detail="ה-session_id בגוף הבקשה לא תואם לכותרת X-Session-Id.")
     status = get_pg().session_status(session_id)
     if status is None:
-        raise HTTPException(status_code=404, detail="Session not found. Create a new one.")
+        raise HTTPException(status_code=404, detail="הסשן לא נמצא. יש ליצור סשן חדש.")
     if status == "archived":
-        raise HTTPException(status_code=409, detail="This session was archived by a reset. Create a new one.")
+        raise HTTPException(status_code=409, detail="הסשן הזה הועבר לארכיון בעקבות שיחה חדשה. יש ליצור סשן חדש.")
     try:
         question = sanitize_text(body.message, get_settings().max_message_chars)
         return get_rag().answer(session_id, question)
@@ -52,9 +52,9 @@ def send_message(body: MessageIn, session_id: str = Depends(require_session)) ->
 @router.get("/history")
 def history(session_id: str = Query(...), header_session: str = Depends(require_session)) -> dict:
     if session_id != header_session:
-        raise HTTPException(status_code=403, detail="You can only read your own session.")
+        raise HTTPException(status_code=403, detail="אפשר לקרוא רק את הסשן שלך.")
     if get_pg().session_status(session_id) is None:
-        raise HTTPException(status_code=404, detail="Session not found. Create a new one.")
+        raise HTTPException(status_code=404, detail="הסשן לא נמצא. יש ליצור סשן חדש.")
     return {"session_id": session_id, "messages": get_pg().get_messages(session_id)}
 
 

@@ -1,10 +1,11 @@
-import { useEffect, useRef, useState } from "react";
+import { ReactNode, useEffect, useRef, useState } from "react";
 import type { ChatMessage } from "../types";
 import { MessageBubble } from "./MessageBubble";
+import { Avatar } from "./Welcome";
 
 const NEAR_BOTTOM_PX = 80;
 
-export function MessageList({ messages, loading }: { messages: ChatMessage[]; loading: boolean }) {
+export function MessageList({ messages, loading, header }: { messages: ChatMessage[]; loading: boolean; header?: ReactNode }) {
   const ref = useRef<HTMLDivElement>(null);
   const [atBottom, setAtBottom] = useState(true);
 
@@ -18,8 +19,8 @@ export function MessageList({ messages, loading }: { messages: ChatMessage[]; lo
     if (el) setAtBottom(el.scrollHeight - el.scrollTop - el.clientHeight < NEAR_BOTTOM_PX);
   };
 
-  // Auto-scroll on new content - but only if the user is already at the bottom,
-  // or the newest message is their own. Never yank someone who scrolled up to read.
+  // גלילה אוטומטית להודעה חדשה, אבל רק אם המשתמש כבר בתחתית או שההודעה החדשה היא שלו.
+  // לעולם לא "מושכים" למטה מי שגלל למעלה כדי לקרוא.
   useEffect(() => {
     const last = messages[messages.length - 1];
     if (atBottom || last?.role === "user") scrollToBottom();
@@ -28,21 +29,16 @@ export function MessageList({ messages, loading }: { messages: ChatMessage[]; lo
 
   return (
     <div className="relative min-h-0 flex-1">
-      <div ref={ref} onScroll={onScroll} className="h-full space-y-3 overflow-y-auto bg-slate-50 p-3">
-        {messages.length === 0 && !loading && (
-          <p className="pt-6 text-center text-sm text-slate-400">
-            Load the sample corpus (paperclip icon), then ask something like
-            <br />
-            <i>“Which robot flew a helicopter on Mars?”</i>
-          </p>
-        )}
+      <div ref={ref} onScroll={onScroll} className="h-full space-y-3 overflow-y-auto bg-gradient-to-b from-sky-50 to-white p-3">
+        {header}
         {messages.map((m, i) => (
           <MessageBubble key={m.id ?? i} m={m} />
         ))}
         {loading && (
-          <div className="flex justify-start">
-            <div className="rounded-2xl rounded-bl-sm border border-slate-200 bg-white px-3 py-2 text-sm text-slate-400">
-              Retrieving &amp; thinking<span className="animate-pulse">...</span>
+          <div className="flex items-start gap-2">
+            <Avatar />
+            <div className="rounded-2xl rounded-ss-sm border border-slate-100 bg-white px-3 py-2 text-sm text-slate-500 shadow-sm">
+              מחפש במסמכים וחושב<span className="animate-pulse">...</span>
             </div>
           </div>
         )}
@@ -50,8 +46,8 @@ export function MessageList({ messages, loading }: { messages: ChatMessage[]; lo
       {!atBottom && (
         <button
           onClick={() => scrollToBottom()}
-          aria-label="Scroll to bottom"
-          className="absolute bottom-3 right-4 flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-md hover:bg-slate-100"
+          aria-label="גלול למטה"
+          className="absolute bottom-3 end-4 flex h-8 w-8 items-center justify-center rounded-full border border-slate-200 bg-white text-slate-600 shadow-md hover:bg-slate-50"
         >
           ↓
         </button>

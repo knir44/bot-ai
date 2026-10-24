@@ -28,7 +28,7 @@ def ingest_bytes(filename: str, data: bytes, es: EsRepository) -> dict:
     text = extract_text(data, ext)
     chunks = chunk_text(text, s.chunk_size, s.chunk_overlap)
     if not chunks:
-        raise ValidationError("No extractable text found (scanned PDFs need OCR, which is not supported).")
+        raise ValidationError("לא נמצא טקסט בקובץ (PDF סרוק דורש OCR, שאינו נתמך).")
 
     # doc_id = hash of the content: uploading the identical file again replaces it instead of duplicating it.
     doc_id = hashlib.sha256(data).hexdigest()[:16]

@@ -48,7 +48,7 @@ def _client():
 
     key = get_settings().gemini_api_key
     if not key:
-        raise EmbeddingError("GEMINI_API_KEY is not configured. Set it in .env and restart the backend.")
+        raise EmbeddingError("GEMINI_API_KEY לא הוגדר. מוסיפים אותו לקובץ .env ומפעילים מחדש את הבקאנד.")
     return genai.Client(api_key=key)
 
 
@@ -76,7 +76,7 @@ def _embed_batch(texts: List[str], task_type: str) -> List[List[float]]:
             wait = 2**attempt
             log.warning("Embedding batch failed (%s); retry %d/%d in %ds", exc, attempt + 1, MAX_RETRIES, wait)
             if attempt == MAX_RETRIES - 1:
-                raise EmbeddingError(f"Gemini embedding request failed: {exc}") from exc
+                raise EmbeddingError(f"הבקשה ל-Gemini ליצירת embeddings נכשלה: {exc}") from exc
             time.sleep(wait)
     raise EmbeddingError("unreachable")
 

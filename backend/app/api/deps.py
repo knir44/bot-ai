@@ -32,5 +32,5 @@ def require_session(
 ) -> str:
     """Every protected endpoint needs both headers; the token must be the HMAC of the id."""
     if not verify_session(x_session_id, x_session_token, get_settings().session_secret):
-        raise HTTPException(status_code=401, detail="Invalid or missing session. Create one with POST /api/v1/chat/session.")
+        raise HTTPException(status_code=401, detail="הסשן חסר או לא תקין. יוצרים סשן חדש עם POST /api/v1/chat/session.")
     return x_session_id

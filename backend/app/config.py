@@ -20,7 +20,8 @@ class Settings(BaseSettings):
     # Gemini
     gemini_api_key: str = ""
     gemini_embedding_model: str = "gemini-embedding-001"
-    gemini_llm_model: str = "gemini-2.5-flash"
+    gemini_llm_model: str = "gemini-3.5-flash"
+    gemini_rewrite_model: str = "gemini-3.1-flash-lite"  # small and fast: only rewrites follow-up questions
     embedding_dimensions: int = 768
 
     # Security
@@ -36,7 +37,11 @@ class Settings(BaseSettings):
     top_k: int = 5
     rrf_k: int = 60
     rewrite_followups: bool = True
-    history_turns: int = 6  # how many previous messages are shown to the LLM
+    history_turns: int = 3  # how many previous question+answer turns are shown to the LLM
+
+    # Start-up convenience: if the index is empty, load the bundled sample corpus in the background,
+    # so the bot can answer questions immediately without uploading anything first.
+    auto_seed_sample: bool = True
 
     @property
     def cors_origin_list(self) -> List[str]:

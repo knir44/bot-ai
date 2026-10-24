@@ -10,6 +10,7 @@ from app.api import deps
 from app.api.v1 import chat as chat_module
 from app.api.v1 import health as health_module
 from app.repositories import pg_repo
+from app.repositories.pg_repo import turns_to_messages
 from app.services import llm, rag
 
 
@@ -27,14 +28,17 @@ class FakePg:
     def archive_session(self, sid):
         self.sessions[sid] = "archived"
 
-    def add_message(self, sid, role, content, sources=None, trace=None):
+    def add_turn(self, sid, question, answer, sources=None, trace=None):
         self.messages.append(
-            {"id": len(self.messages), "sid": sid, "role": role, "content": content, "sources": sources, "trace": trace, "created_at": "now"}
+            {"id": len(self.messages), "sid": sid, "question": question, "answer": answer, "sources": sources, "trace": trace, "created_at": "now"}
         )
 
-    def get_messages(self, sid, limit=None):
-        rows = [m for m in self.messages if m["sid"] == sid]
+    def get_turns(self, sid, limit=None):
+        rows = [t for t in self.messages if t["sid"] == sid]
         return rows[-limit:] if limit else rows
+
+    def get_messages(self, sid):
+        return turns_to_messages(self.get_turns(sid))
 
 
 class FakeEs:
@@ -117,6 +121,25 @@ def test_chat_roundtrip_returns_sources_and_trace(client):
 
     hist = client.get("/api/v1/chat/history", params={"session_id": s["session_id"]}, headers=headers(s)).json()
     assert [m["role"] for m in hist["messages"]] == ["user", "assistant"]
+
+
+def test_one_row_per_turn_with_question_and_answer_columns(client):
+    s = new_session(client)
+    client.post("/api/v1/chat/message", headers=headers(s), json={"session_id": s["session_id"], "message": "When did Apollo 11 land?"})
+    (turn,) = deps.get_pg().get_turns(s["session_id"])
+    assert turn["question"] == "When did Apollo 11 land?"
+    assert "[1]" in turn["answer"]
+    assert turn["sources"][0]["filename"] == "apollo_11.txt"
+
+
+def test_answers_even_when_index_is_empty(client, monkeypatch):
+    s = new_session(client)
+    monkeypatch.setattr(FakeEs, "count", lambda self: 0)
+    monkeypatch.setattr(llm, "generate_general_answer", lambda q, h: "אין עדיין מסמכים במאגר. תשובה כללית.")
+    r = client.post("/api/v1/chat/message", headers=headers(s), json={"session_id": s["session_id"], "message": "מה זה RAG?"})
+    assert r.status_code == 200
+    body = r.json()
+    assert "תשובה כללית" in body["answer"] and body["sources"] == [] and body["trace"] is None
 
 
 def test_followup_is_rewritten_using_history(client):

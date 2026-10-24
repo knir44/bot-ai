@@ -3,35 +3,43 @@ import ReactMarkdown from "react-markdown";
 import type { ChatMessage } from "../types";
 import { SourceCard } from "./SourceCard";
 import { TraceView } from "./TraceView";
+import { Avatar } from "./Welcome";
 
 export function MessageBubble({ m }: { m: ChatMessage }) {
   const [showSources, setShowSources] = useState(false);
   const [showTrace, setShowTrace] = useState(false);
 
+  // בעברית (RTL) "התחלה" היא הצד הימני: הבוט מימין עם אווטאר, המשתמש משמאל.
   if (m.role === "user") {
     return (
       <div className="flex justify-end">
-        <div className="max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-br-sm bg-brand-600 px-3 py-2 text-sm text-white">{m.content}</div>
+        <div dir="auto" className="max-w-[85%] whitespace-pre-wrap rounded-2xl rounded-ee-sm bg-gradient-to-br from-teal-500 to-sky-500 px-3 py-2 text-sm font-medium text-white shadow-sm">
+          {m.content}
+        </div>
       </div>
     );
   }
   const hasSources = !!m.sources?.length;
   return (
-    <div className="flex justify-start">
-      <div className="max-w-[92%]">
-        <div className={`prose-chat rounded-2xl rounded-bl-sm px-3 py-2 text-sm ${m.error ? "bg-red-50 text-red-700" : "border border-slate-200 bg-white text-slate-800"}`}>
+    <div className="flex items-start gap-2">
+      <Avatar />
+      <div className="min-w-0 max-w-[88%]">
+        <div
+          dir="auto"
+          className={`prose-chat rounded-2xl rounded-ss-sm border px-3 py-2 text-sm ${m.error ? "border-red-200 bg-red-50 text-red-700" : "border-slate-100 bg-white text-slate-800 shadow-sm"}`}
+        >
           <ReactMarkdown>{m.content}</ReactMarkdown>
         </div>
         {(hasSources || m.trace) && (
           <div className="mt-1 flex gap-3 px-1 text-[11px] text-brand-700">
             {hasSources && (
               <button className="hover:underline" onClick={() => setShowSources(!showSources)}>
-                {showSources ? "Hide" : "Show"} sources ({m.sources!.length})
+                {showSources ? "הסתר מקורות" : `הצג מקורות (${m.sources!.length})`}
               </button>
             )}
             {m.trace && (
               <button className="hover:underline" onClick={() => setShowTrace(!showTrace)}>
-                {showTrace ? "Hide" : "How did I answer?"}
+                {showTrace ? "הסתר" : "איך עניתי?"}
               </button>
             )}
           </div>

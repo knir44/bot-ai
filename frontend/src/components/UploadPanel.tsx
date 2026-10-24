@@ -16,7 +16,7 @@ export function UploadPanel({ onChanged }: { onChanged?: () => void }) {
     try {
       setDocs((await api.listDocuments()).documents);
     } catch {
-      /* backend offline: the widget header already shows it */
+      /* השרת לא זמין: הכותרת של הווידג'ט כבר מראה את זה */
     }
   }, []);
   useEffect(() => {
@@ -32,33 +32,33 @@ export function UploadPanel({ onChanged }: { onChanged?: () => void }) {
 
   const upload = async (file: File) => {
     const ext = "." + (file.name.split(".").pop() ?? "").toLowerCase();
-    if (!ALLOWED.includes(ext)) return setMsg({ ok: false, text: `Only ${ALLOWED.join(", ")} files are allowed.` });
-    if (file.size > MAX_MB * 1024 * 1024) return setMsg({ ok: false, text: `File is larger than ${MAX_MB} MB.` });
-    setBusy(`Chunking and embedding ${file.name}...`);
+    if (!ALLOWED.includes(ext)) return setMsg({ ok: false, text: "מותר להעלות רק קבצי PDF, TXT ו-DOCX." });
+    if (file.size > MAX_MB * 1024 * 1024) return setMsg({ ok: false, text: `הקובץ גדול מ-${MAX_MB}MB.` });
+    setBusy(`מחלק ל-chunks ויוצר embeddings עבור ${file.name}...`);
     setMsg(null);
     try {
       const r = await api.upload(file);
-      done(true, `${r.filename}: ${r.chunks} chunks indexed in ${r.elapsed_ms} ms.`);
+      done(true, `${r.filename}: ${r.chunks} קטעים נוספו לאינדקס (${r.elapsed_ms} אלפיות שנייה).`);
     } catch (e: any) {
       done(false, e.message);
     }
   };
 
   const seed = async () => {
-    setBusy("Embedding the sample corpus (about 40 chunks)...");
+    setBusy("יוצר embeddings למסמכי הדוגמה (כ-40 קטעים)...");
     setMsg(null);
     try {
       const r = await api.seed();
-      done(true, `Loaded ${r.ingested.length} sample documents (Space Exploration).`);
+      done(true, `נטענו ${r.ingested.length} מסמכי דוגמה (חקר החלל).`);
     } catch (e: any) {
       done(false, e.message);
     }
   };
 
   const clearAll = async () => {
-    if (!window.confirm("Delete every indexed chunk?")) return;
+    if (!window.confirm("למחוק את כל הקטעים מהאינדקס?")) return;
     await api.clearCorpus();
-    setMsg({ ok: true, text: "Index cleared." });
+    setMsg({ ok: true, text: "האינדקס נוקה." });
     refresh();
     onChanged?.();
   };
@@ -84,9 +84,9 @@ export function UploadPanel({ onChanged }: { onChanged?: () => void }) {
           if (f) upload(f);
         }}
         onClick={() => input.current?.click()}
-        className={`cursor-pointer rounded-lg border-2 border-dashed p-3 text-center ${drag ? "border-brand-500 bg-brand-50" : "border-slate-300 hover:bg-slate-50"}`}
+        className={`cursor-pointer rounded-lg border-2 border-dashed p-3 text-center text-slate-600 ${drag ? "border-brand-400 bg-brand-50" : "border-slate-300 hover:bg-slate-100"}`}
       >
-        Drop a PDF / TXT / DOCX here or click to choose
+        גרור לכאן קובץ PDF / TXT / DOCX או לחץ לבחירה
         <input
           ref={input}
           type="file"
@@ -101,21 +101,23 @@ export function UploadPanel({ onChanged }: { onChanged?: () => void }) {
       </div>
       <div className="flex gap-2">
         <button className="btn-ghost flex-1" disabled={!!busy} onClick={seed}>
-          Load sample corpus
+          טען מסמכי דוגמה
         </button>
         <button className="btn-ghost" disabled={!!busy || docs.length === 0} onClick={clearAll}>
-          Clear all
+          נקה הכל
         </button>
       </div>
       {busy && <div className="animate-pulse text-brand-700">{busy}</div>}
-      {msg && <div className={msg.ok ? "text-emerald-700" : "text-red-600"}>{msg.text}</div>}
+      {msg && <div className={msg.ok ? "text-emerald-600" : "text-red-600"}>{msg.text}</div>}
       {docs.length > 0 && (
         <ul className="max-h-24 space-y-0.5 overflow-auto">
           {docs.map((d) => (
-            <li key={d.doc_id} className="flex items-center gap-2">
-              <span className="truncate">{d.filename}</span>
-              <span className="text-slate-400">{d.chunks} chunks</span>
-              <button className="ml-auto text-slate-400 hover:text-red-600" onClick={() => remove(d)} aria-label={`Delete ${d.filename}`}>
+            <li key={d.doc_id} className="flex items-center gap-2 text-slate-600">
+              <span dir="ltr" className="truncate">
+                {d.filename}
+              </span>
+              <span className="text-slate-400">{d.chunks} קטעים</span>
+              <button className="ms-auto text-slate-400 hover:text-red-600" onClick={() => remove(d)} aria-label={`מחק ${d.filename}`}>
                 ✕
               </button>
             </li>

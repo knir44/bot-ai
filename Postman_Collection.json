@@ -1,7 +1,7 @@
 {
   "info": {
     "name": "DocuMind RAG",
-    "description": "Run the requests in order (1 -> 11). Requests 2 and 11 store session_id / session_token as collection variables. Set `baseUrl` to http://localhost:8000/api/v1 (direct) or http://localhost:3000/api/v1 (through nginx).",
+    "description": "Run the requests in order (1 -> 11). Requests 2 and 11 store session_id / session_token as collection variables. Set `baseUrl` to http://localhost:8001/api/v1 (direct) or http://localhost:3000/api/v1 (through nginx).",
     "schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
   },
   "item": [
@@ -511,7 +511,7 @@
   "variable": [
     {
       "key": "baseUrl",
-      "value": "http://localhost:8000/api/v1"
+      "value": "http://localhost:8001/api/v1"
     },
     {
       "key": "session_id",

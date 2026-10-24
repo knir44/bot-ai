@@ -66,7 +66,7 @@ def embedding_map(q: Optional[str] = Query(default=None, max_length=2000)) -> di
     """
     rows = get_es().scan_embeddings()
     if len(rows) < 3:
-        return {"points": [], "query": None, "note": "Need at least 3 chunks. Load the sample corpus first."}
+        return {"points": [], "query": None, "note": "נדרשים לפחות 3 קטעים. יש לטעון קודם את מסמכי הדוגמה."}
     matrix = np.asarray([r["embedding"] for r in rows], dtype=np.float32)
     mean = matrix.mean(axis=0)
     _, _, vt = np.linalg.svd(matrix - mean, full_matrices=False)

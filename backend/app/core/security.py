@@ -50,9 +50,9 @@ def sanitize_text(text: str, max_chars: int) -> str:
     text = unicodedata.normalize("NFKC", text or "")
     text = _CONTROL_CHARS.sub("", text).strip()
     if not text:
-        raise ValidationError("Message is empty.")
+        raise ValidationError("ההודעה ריקה.")
     if len(text) > max_chars:
-        raise ValidationError(f"Message too long (max {max_chars} characters).")
+        raise ValidationError(f"ההודעה ארוכה מדי (מקסימום {max_chars} תווים).")
     return text
 
 
@@ -75,29 +75,29 @@ def validate_upload(filename: str, data: bytes, max_bytes: int) -> Tuple[str, st
     safe = sanitize_filename(filename)
     ext = "." + safe.rsplit(".", 1)[-1].lower() if "." in safe else ""
     if ext not in ALLOWED_EXTENSIONS:
-        raise ValidationError(f"File type '{ext or 'none'}' not allowed. Allowed: PDF, TXT, DOCX.")
+        raise ValidationError(f"סוג הקובץ '{ext or 'ללא סיומת'}' אינו מותר. מותר להעלות: PDF, TXT, DOCX.")
     if len(data) == 0:
-        raise ValidationError("File is empty.")
+        raise ValidationError("הקובץ ריק.")
     if len(data) > max_bytes:
-        raise ValidationError(f"File too large (max {max_bytes // (1024 * 1024)} MB).")
+        raise ValidationError(f"הקובץ גדול מדי (מקסימום {max_bytes // (1024 * 1024)}MB).")
 
     if ext == ".pdf":
         if not data.startswith(b"%PDF-"):
-            raise ValidationError("File content is not a valid PDF.")
+            raise ValidationError("תוכן הקובץ אינו PDF תקין.")
     elif ext == ".docx":
         if not data.startswith(b"PK\x03\x04"):
-            raise ValidationError("File content is not a valid DOCX.")
+            raise ValidationError("תוכן הקובץ אינו DOCX תקין.")
         try:
             with zipfile.ZipFile(io.BytesIO(data)) as z:
                 if "word/document.xml" not in z.namelist():
-                    raise ValidationError("File content is not a valid DOCX.")
+                    raise ValidationError("תוכן הקובץ אינו DOCX תקין.")
         except zipfile.BadZipFile:
-            raise ValidationError("File content is not a valid DOCX.")
+            raise ValidationError("תוכן הקובץ אינו DOCX תקין.")
     else:  # .txt
         if b"\x00" in data[:4096]:
-            raise ValidationError("File content is not plain text.")
+            raise ValidationError("תוכן הקובץ אינו טקסט רגיל.")
         try:
             data.decode("utf-8-sig")
         except UnicodeDecodeError:
-            raise ValidationError("Text files must be UTF-8 encoded.")
+            raise ValidationError("קובצי טקסט חייבים להיות בקידוד UTF-8.")
     return safe, ext

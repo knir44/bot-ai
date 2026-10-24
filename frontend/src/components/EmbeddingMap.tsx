@@ -1,12 +1,12 @@
 import { useMemo, useState } from "react";
 import type { EmbeddingMap as MapData } from "../types";
 
-const PALETTE = ["#4f46e5", "#0891b2", "#059669", "#d97706", "#dc2626", "#7c3aed", "#db2777", "#65a30d", "#0d9488", "#9333ea"];
+const PALETTE = ["#0d9488", "#d97706", "#2563eb", "#db2777", "#7c3aed", "#ea580c", "#16a34a", "#dc2626", "#0891b2", "#c026d3"];
 const W = 640;
 const H = 380;
 const PAD = 24;
 
-/** 2-D scatter of chunk embeddings (PCA projection done by the backend). Pure SVG, no chart library. */
+/** פיזור דו-ממדי של ה-embeddings של הקטעים (הקטנת מימדים ב-PCA מתבצעת בבקאנד). SVG טהור, בלי ספריית גרפים. */
 export function EmbeddingMapView({ data }: { data: MapData }) {
   const [hover, setHover] = useState<string | null>(null);
 
@@ -24,7 +24,7 @@ export function EmbeddingMapView({ data }: { data: MapData }) {
     };
   }, [data]);
 
-  if (!data.points.length) return <p className="text-sm text-slate-500">{data.note ?? "No chunks to plot yet."}</p>;
+  if (!data.points.length) return <p className="text-sm text-slate-500">{data.note ?? "אין עדיין קטעים להצגה."}</p>;
   const color = (f: string) => PALETTE[files.indexOf(f) % PALETTE.length];
   const hovered = data.points.find((p) => p.chunk_id === hover);
 
@@ -38,8 +38,8 @@ export function EmbeddingMapView({ data }: { data: MapData }) {
             cy={scale.y(p.y)}
             r={hover === p.chunk_id ? 8 : 5.5}
             fill={color(p.filename)}
-            fillOpacity={0.8}
-            stroke="white"
+            fillOpacity={0.85}
+            stroke="#ffffff"
             strokeWidth={1.5}
             onMouseEnter={() => setHover(p.chunk_id)}
             onMouseLeave={() => setHover(null)}
@@ -47,14 +47,14 @@ export function EmbeddingMapView({ data }: { data: MapData }) {
         ))}
         {data.query && (
           <g transform={`translate(${scale.x(data.query.x)},${scale.y(data.query.y)})`}>
-            <path d="M0,-11 L3.2,-3.5 11,-3.5 4.8,1.5 7,9.5 0,5 -7,9.5 -4.8,1.5 -11,-3.5 -3.2,-3.5Z" fill="#111827" stroke="white" strokeWidth={1.5} />
-            <text y={-15} textAnchor="middle" className="fill-slate-900 text-[11px] font-semibold">
-              your query
+            <path d="M0,-11 L3.2,-3.5 11,-3.5 4.8,1.5 7,9.5 0,5 -7,9.5 -4.8,1.5 -11,-3.5 -3.2,-3.5Z" fill="#0f172a" stroke="#ffffff" strokeWidth={1.5} />
+            <text y={-15} textAnchor="middle" className="fill-slate-800 text-[11px] font-semibold">
+              השאלה שלך
             </text>
           </g>
         )}
       </svg>
-      <div className="mt-2 flex min-h-[2.5rem] flex-wrap gap-x-3 gap-y-1 text-[11px]">
+      <div dir="ltr" className="mt-2 flex min-h-[2.5rem] flex-wrap gap-x-3 gap-y-1 text-[11px] text-slate-600">
         {files.map((f) => (
           <span key={f} className="flex items-center gap-1">
             <span className="h-2.5 w-2.5 rounded-full" style={{ background: color(f) }} />
@@ -62,16 +62,16 @@ export function EmbeddingMapView({ data }: { data: MapData }) {
           </span>
         ))}
       </div>
-      <p className="min-h-[2.5rem] text-xs text-slate-600">
+      <p dir="ltr" className="min-h-[2.5rem] text-start text-xs text-slate-500">
         {hovered ? (
           <>
-            <b>
+            <b className="text-slate-700">
               {hovered.filename} #{hovered.chunk_index}
             </b>
             : {hovered.snippet}...
           </>
         ) : (
-          "Hover a dot to read the chunk."
+          <span dir="rtl">רחף מעל נקודה כדי לקרוא את הקטע.</span>
         )}
       </p>
     </div>

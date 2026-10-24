@@ -12,7 +12,7 @@ A full-stack **Retrieval-Augmented Generation** app built to *teach* RAG. Everyt
 | `backend` | Python 3.12, FastAPI | Router -> Service -> Repository; RAG pipeline; security; rotating logs |
 | `elasticsearch` | 8.15 | Chunk text (BM25) + `dense_vector` embeddings (kNN) |
 | `postgres` + `pgadmin` | 16 / 8 | Sessions and chat history (with the full retrieval trace of every answer) |
-| Gemini API | `gemini-embedding-001`, `gemini-2.5-flash` | Embeddings and answer generation |
+| Gemini API | `gemini-embedding-001`, `gemini-3.5-flash` | Embeddings and answer generation |
 
 ## Learn RAG with it - suggested path
 
@@ -39,9 +39,9 @@ A full-stack **Retrieval-Augmented Generation** app built to *teach* RAG. Everyt
 ```mermaid
 flowchart LR
   U[Browser<br/>React widget + Lab] -->|/api/v1| N[nginx :3000]
-  N --> B[FastAPI backend :8000]
+  N --> B[FastAPI backend, host port 8001]
   B -->|chunks + vectors<br/>BM25 + kNN| ES[(Elasticsearch :9200)]
-  B -->|sessions, messages, traces| PG[(Postgres :5432)]
+  B -->|"sessions, chat_history (question + answer per row), traces"| PG[(Postgres :5432)]
   PGA[pgAdmin :5050] --> PG
   B -->|embeddings + generation| G[Gemini API]
   B --> L[/app/logs<br/>rotating files/]
@@ -60,7 +60,7 @@ backend/app
 
 - **Docker Desktop** (Windows/macOS) or Docker Engine + Compose v2. Allow it ~3 GB RAM (Elasticsearch uses 512 MB heap).
 - A free **Gemini API key**: <https://aistudio.google.com/apikey>.
-- Free ports: `3000`, `8000`, `5050`, `5432`, `9200`.
+- Free ports: `3000`, `8001`, `5050`, `5432`, `9200`.
 
 ## Setup
 
@@ -75,7 +75,7 @@ First start takes a few minutes (image pulls). When it settles:
 | URL | What |
 |---|---|
 | <http://localhost:3000> | The app (widget on every page, `/lab` for the Lab) |
-| <http://localhost:8000/docs> | Swagger UI for the API |
+| <http://localhost:8001/docs> | Swagger UI for the API |
 | <http://localhost:5050> | pgAdmin (login from `.env`; add server host `postgres`, user/password from `.env`) |
 | <http://localhost:9200/chunks/_count> | Elasticsearch chunk count |
 
@@ -110,7 +110,7 @@ All paths are under `/api/v1`. Protected endpoints need headers `X-Session-Id` a
 ### Postman
 
 1. Postman -> **Import** -> [`Postman_Collection.json`](Postman_Collection.json).
-2. The `baseUrl` variable defaults to `http://localhost:8000/api/v1`.
+2. The `baseUrl` variable defaults to `http://localhost:8001/api/v1`.
 3. Run requests **1 -> 11 in order** (or use the Collection Runner). *Create session* stores `session_id`/`session_token`; *Reset* swaps them for the new session. In *Upload document* pick a file in the `file` field. Request 12 shows a forged token being rejected.
 
 ## Security notes
@@ -131,13 +131,13 @@ docker compose run --rm backend python -m pytest -q
 
 Covers chunking, RRF (including the worked example from the docs), BM25/TF-IDF formulas by hand, the ES `explain` parser, upload/session security, and the API flow with Elasticsearch/Postgres/Gemini faked. Retrieval *quality* is measured separately by `scripts.evaluate` against the real stack.
 
-Frontend: `cd frontend && npm install && npm run build` (type-checks with strict TypeScript). Hot-reload dev server: `npm run dev` (proxies `/api` to `localhost:8000`).
+Frontend: `cd frontend && npm install && npm run build` (type-checks with strict TypeScript). Hot-reload dev server: `npm run dev` (proxies `/api` to `localhost:8001`).
 
 ## Differences from the original spec (and why)
 
 | Spec | Here | Reason |
 |---|---|---|
-| `text-embedding-004`, `gemini-1.5-flash` | `gemini-embedding-001` (768-d), `gemini-2.5-flash`, both configurable | Google retires model names regularly; check the Gemini docs if a model returns 404 |
+| `text-embedding-004`, `gemini-1.5-flash` | `gemini-embedding-001` (768-d), `gemini-3.5-flash`, both configurable | Google retires model names regularly; check the Gemini docs if a model returns 404 |
 | (not mentioned) RRF via Elasticsearch | RRF written in Python | ES's native RRF retriever needs a paid licence, and our version exposes every rank for teaching |
 | Session via header *or* cookie | Header (`X-Session-Id` + HMAC token) | Simple, CORS-friendly, easy to test in Postman |
 | DOCX in the first list, PDF/TXT in the prompt | PDF, TXT **and** DOCX | Harmless superset |

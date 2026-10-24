@@ -16,7 +16,7 @@ def extract_text(data: bytes, ext: str) -> str:
             reader = PdfReader(io.BytesIO(data))
             pages = [page.extract_text() or "" for page in reader.pages]
         except Exception as exc:  # corrupt / encrypted PDFs
-            raise ValidationError(f"Could not read PDF: {exc}")
+            raise ValidationError(f"לא ניתן לקרוא את ה-PDF: {exc}")
         return "\n\n".join(pages)
     if ext == ".docx":
         from docx import Document
@@ -24,6 +24,6 @@ def extract_text(data: bytes, ext: str) -> str:
         try:
             doc = Document(io.BytesIO(data))
         except Exception as exc:
-            raise ValidationError(f"Could not read DOCX: {exc}")
+            raise ValidationError(f"לא ניתן לקרוא את ה-DOCX: {exc}")
         return "\n\n".join(p.text for p in doc.paragraphs if p.text.strip())
-    raise ValidationError(f"Unsupported file type {ext}")
+    raise ValidationError(f"סוג קובץ לא נתמך: {ext}")

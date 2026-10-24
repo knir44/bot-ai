@@ -9,7 +9,7 @@
       v
    generate  ->  Gemini answers using only that context         [G = Generation]
       v
-   save to Postgres (answer + sources + full trace)
+   save to Postgres: ONE row with question, answer, sources and the full trace
 """
 from __future__ import annotations
 
@@ -19,13 +19,11 @@ from typing import List
 
 from app.config import get_settings
 from app.repositories.es_repo import EsRepository
-from app.repositories.pg_repo import PgRepository
+from app.repositories.pg_repo import PgRepository, turns_to_messages
 from app.services import llm
 from app.services.retrieval.hybrid import retrieve, slim
 
 log = logging.getLogger(__name__)
-
-NO_DOCS_ANSWER = "There are no documents in the knowledge base yet. Upload a file or load the sample corpus first."
 
 
 class RagService:
@@ -35,7 +33,17 @@ class RagService:
     def answer(self, session_id: str, question: str) -> dict:
         s = get_settings()
         timings = {}
-        history = [{"role": m["role"], "content": m["content"]} for m in self.pg.get_messages(session_id, s.history_turns)]
+        recent = turns_to_messages(self.pg.get_turns(session_id, s.history_turns))
+        history = [{"role": m["role"], "content": m["content"]} for m in recent]
+
+        # Nothing indexed (e.g. the sample corpus failed to load): do not block the user,
+        # answer from the model's general knowledge and say so. This is NOT RAG - there is nothing to retrieve.
+        if self.es.count() == 0:
+            t = time.perf_counter()
+            answer = llm.generate_general_answer(question, history)
+            timings["llm_ms"] = round((time.perf_counter() - t) * 1000, 1)
+            self.pg.add_turn(session_id, question, answer)
+            return {"answer": answer, "sources": [], "trace": None}
 
         # 1. Condense follow-ups: "When did it launch?" is useless as a search query on its own.
         standalone = question
@@ -43,11 +51,6 @@ class RagService:
             t = time.perf_counter()
             standalone = llm.rewrite_question(question, history) or question
             timings["rewrite_ms"] = round((time.perf_counter() - t) * 1000, 1)
-
-        if self.es.count() == 0:
-            self.pg.add_message(session_id, "user", question)
-            self.pg.add_message(session_id, "assistant", NO_DOCS_ANSWER)
-            return {"answer": NO_DOCS_ANSWER, "sources": [], "trace": None}
 
         # 2. Retrieve
         result = retrieve(standalone, self.es, "hybrid", s.retrieve_k, s.top_k, s.rrf_k)
@@ -73,8 +76,7 @@ class RagService:
             "models": {"llm": s.gemini_llm_model, "embedding": s.gemini_embedding_model, "dims": s.embedding_dimensions},
         }
 
-        self.pg.add_message(session_id, "user", question)
-        self.pg.add_message(session_id, "assistant", answer, sources=sources, trace=trace)
+        self.pg.add_turn(session_id, question, answer, sources=sources, trace=trace)
         log.info("Answered session=%s in %.0f ms (top: %s)", session_id, sum(timings.values()), [c["chunk_id"] for c in chunks])
         return {"answer": answer, "sources": sources, "trace": trace}
 

@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 import logging
+import threading
 from contextlib import asynccontextmanager
 
 from fastapi import FastAPI
@@ -11,6 +12,7 @@ from app.api.v1 import chat, documents, health, lab
 from app.config import get_settings
 from app.core.logging_config import setup_logging
 from app.repositories import pg_repo
+from app.services.ingestion import ingest_sample_corpus
 
 log = logging.getLogger(__name__)
 
@@ -25,8 +27,20 @@ async def lifespan(app: FastAPI):
     if not s.gemini_api_key:
         log.warning("GEMINI_API_KEY is empty: search works only after you set it (embeddings + answers need Gemini)")
     pg_repo.init_db()
-    get_es().ensure_index()
+    es = get_es()
+    es.ensure_index()
+    if s.auto_seed_sample and s.gemini_api_key and es.count() == 0:
+        # In a background thread so the API is up immediately; embedding ~40 chunks takes a few seconds.
+        threading.Thread(target=_seed_sample, args=(es,), daemon=True).start()
     yield
+
+
+def _seed_sample(es) -> None:
+    try:
+        results = ingest_sample_corpus(es)
+        log.info("Auto-loaded sample corpus: %d documents, %d chunks", len(results), sum(r["chunks"] for r in results))
+    except Exception:
+        log.exception("Auto-loading the sample corpus failed (you can still load it from the UI or upload your own files)")
 
 
 app = FastAPI(title="DocuMind RAG", version="1.0.0", lifespan=lifespan)
